@@ -8,6 +8,7 @@ import { Button } from 'react-bootstrap';
 import Print from './print';
 import SweetAlert from 'sweetalert2-react';
 import Modal from 'react-bootstrap/Modal';
+import ErrorSound from '../public/error.mp3';
 
 function Home() {
     const [curData, setCurData] = React.useState('Box');
@@ -26,22 +27,17 @@ function Home() {
     function handlerInput(event) {
         if (event.key === 'Enter') {
             event.preventDefault();
-            if (curData === 'Box') {
-                inputA.current.focus();
-            } else if (curData === 'A') {
-                inputB.current.focus();
-            }
-            else {
-                if (validation()) {
-                    saveData();
-                    inputA.current.focus();
-                }
-            }
+            validation();
         }
     }
 
     React.useEffect(() => {
     }, [])
+
+    function playAudio() {
+        let x = document.getElementById("myAudio");
+        x.play()
+    }
 
     // 儲存編號到箱號陣列
     function saveData() {
@@ -54,11 +50,42 @@ function Home() {
     }
 
     // 驗證掃描資料
-    function validation() {
+    async function validation() {
         // 做驗證
-
+        if (curData === 'A') {
+            if (dataA.length === 13) {
+                inputB.current.focus();
+            } else {
+                playAudio();
+                setMsg(pre => 'A資料出問題！');
+                setWindowType(pre => 'error');
+                setShow(true); // 跳出alert
+                inputA.current.focus();
+            }
+        } else if (curData === 'B') {
+            if (dataB.length === 10) {
+                saveData();
+                inputA.current.focus();
+            } else {
+                playAudio();
+                setMsg(pre => 'B資料出問題！');
+                setWindowType(pre => 'error');
+                setShow(true); // 跳出alert
+                inputB.current.focus();
+            }
+        } else if (curData === 'Box') {
+            if (boxNumber.length === 11) {
+                inputA.current.focus();
+            } else {
+                playAudio();
+                setMsg(pre => '箱號資料出問題！');
+                setWindowType(pre => 'error');
+                setShow(true); // 跳出alert
+                inputBox.current.focus();
+            }
+        }
         // 回傳
-        return true;
+        return false;
     }
 
     // 點擊input全選
@@ -97,8 +124,18 @@ function Home() {
         inputBox.current.focus();
     }
 
+    // 輸出完檔案
+    function afterExport() {
+        setBigData(pre => []);
+        cleanAllInput();
+    }
+
     return (
         <Fragment>
+            <audio id="myAudio">
+                <source src={ErrorSound} type="audio/mpeg" />
+                Your browser does not support the audio element.
+            </audio>
             <Container>
                 <Row>
                     <Col sm={4} >
@@ -106,8 +143,8 @@ function Home() {
                             <InputGroup.Prepend>
                                 <InputGroup.Text>箱號</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <FormControl value={boxNumber} onChange={(e) => setBoxNumber(e.target.value)} ref={inputBox} 
-                            onFocus={(e) => handleFocus(e, 'Box')} aria-describedby="basic-addon1" onKeyPress={handlerInput} placeholder="請輸入箱號"/>
+                            <FormControl value={boxNumber} onChange={(e) => setBoxNumber(e.target.value)} ref={inputBox}
+                                onFocus={(e) => handleFocus(e, 'Box')} aria-describedby="basic-addon1" onKeyPress={handlerInput} placeholder="請輸入箱號" maxlength="11"/>
                         </InputGroup>
 
                     </Col>
@@ -118,8 +155,8 @@ function Home() {
                             <InputGroup.Prepend>
                                 <InputGroup.Text>輸入資料</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <FormControl value={dataA} onChange={(e) => setDataA(e.target.value)} ref={inputA} onFocus={(e) => handleFocus(e, 'A')} placeholder="請掃描A資料" onKeyPress={handlerInput} />
-                            <FormControl value={dataB} onChange={(e) => setDataB(e.target.value)} ref={inputB} onFocus={(e) => handleFocus(e, 'B')} placeholder="請掃描B資料" onKeyPress={handlerInput} />
+                            <FormControl value={dataA} onChange={(e) => setDataA(e.target.value)} ref={inputA} onFocus={(e) => handleFocus(e, 'A')} placeholder="請掃描A資料" onKeyPress={handlerInput} maxlength="13" />
+                            <FormControl value={dataB} onChange={(e) => setDataB(e.target.value)} ref={inputB} onFocus={(e) => handleFocus(e, 'B')} placeholder="請掃描B資料" onKeyPress={handlerInput} maxlength="10" />
                         </InputGroup>
                     </Col>
                 </Row>
@@ -130,9 +167,12 @@ function Home() {
                 </Row>
                 <Row>
                     <Col sm={8}>
-                        <Button variant="info" size="lg" onClick={() => saveBigData()}>繼續下個箱號</Button>
+                        <Button variant="info" size="lg" onClick={() => saveBigData()}>儲存當前箱號</Button>
                         {' '}
-                        <Print bigData={bigData}/>
+                        <Print
+                            bigData={bigData}
+                            show={bigData.length > 0 ? true : false}
+                            afterExport={() => afterExport()} />
                     </Col>
                 </Row>
             </Container>
