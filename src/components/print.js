@@ -29,16 +29,25 @@ const dataSet1 = [
 
 function Print(props) {
     return (
-        <ExcelFile element={<Button variant="warning" size="lg" disabled={!props.show} onClick={() => props.afterExport()} style={!props.show ? {cursor: 'not-allowed'} : null}>輸出Excel</Button>}>
-            {props.bigData !== undefined && props.bigData.map((item) => {
-                return (
-                    <ExcelSheet data={Object.values(item)[0]} name={Object.keys(item)} key={Object.keys(item)}>
-                        <ExcelColumn label="A" value="A" />
-                        <ExcelColumn label="B" value="B" />
-                    </ExcelSheet>
-                )
-            })}
-        </ExcelFile>
+        <>
+            <ExcelFile element={<Button variant="warning" size="lg" disabled={!props.show} onClick={() => props.afterExport()} style={!props.show ? { cursor: 'not-allowed' } : null}>輸出Excel</Button>}>
+                {props.bigData !== undefined && props.bigData.map((item) => {
+                    return (
+                        <ExcelSheet data={Object.values(item)[0]} name={Object.keys(item)} key={Object.keys(item)}>
+                            {props.from !== 'C' ?
+                                <>
+                                    <ExcelColumn label="A" value="A" />
+                                    <ExcelColumn label="B" value="B" />
+                                </>
+                                : props.from === 'C' &&
+                                <ExcelColumn label="箱號" value="箱號" />
+                            }
+
+                        </ExcelSheet>
+                    )
+                })}
+            </ExcelFile>
+        </>
     );
 }
 

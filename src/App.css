@@ -40,3 +40,17 @@
 .row {
   justify-content: center;
 }
+
+.homeTab {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 50px !important;
+}
+
+.nav-tabs a {
+  color: white;
+}
+
+.nav-tabs a:hover {
+  color: gray;
+}
