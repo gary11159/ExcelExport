@@ -153,7 +153,7 @@ function A_mode(props) {
                     <Col sm={8}>
                         <InputGroup className="mb-3" size="lg">
                             <InputGroup.Prepend>
-                                <InputGroup.Text>輸入資料</InputGroup.Text>
+                                <InputGroup.Text>掃描資料</InputGroup.Text>
                             </InputGroup.Prepend>
                             <FormControl value={dataA} onChange={(e) => setDataA(e.target.value)} ref={inputA} onFocus={(e) => handleFocus(e, 'A')} placeholder="請掃描一維條碼" onKeyPress={handlerInput} maxLength="20" />
                             <FormControl value={dataB} onChange={(e) => setDataB(e.target.value)} ref={inputB} onFocus={(e) => handleFocus(e, 'B')} placeholder="請掃描QR Code" onKeyPress={handlerInput} maxLength="20" />
