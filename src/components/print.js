@@ -6,47 +6,31 @@ const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
-const dataSet1 = [
-    {
-        A: '123',
-        B: '321'
-    },
-    {
-        A: '123',
-        B: '321'
-    }, {
-        A: '123',
-        B: '321'
-    }, {
-        A: '123',
-        B: '321'
-    }, {
-        A: '123',
-        B: '321'
-    },
-];
-
-
 function Print(props) {
     return (
         <>
-            <ExcelFile element={<Button variant="warning" size="lg" disabled={!props.show} onClick={() => props.afterExport()} style={!props.show ? { cursor: 'not-allowed' } : null}>輸出Excel</Button>}>
-                {props.bigData !== undefined && props.bigData.map((item) => {
-                    return (
-                        <ExcelSheet data={Object.values(item)[0]} name={Object.keys(item)} key={Object.keys(item)}>
-                            {props.from !== 'C' ?
-                                <>
-                                    <ExcelColumn label="A" value="A" />
-                                    <ExcelColumn label="B" value="B" />
-                                </>
-                                : props.from === 'C' &&
-                                <ExcelColumn label="箱號" value="箱號" />
-                            }
+            {props.from !== 'C' ?
+                <ExcelFile filename={props.from === 'A' ? "A模式" : "B模式"} element={<Button variant="warning" size="lg" disabled={!props.show} onClick={() => props.afterExport()} style={!props.show ? { cursor: 'not-allowed' } : null}>輸出Excel</Button>}>
+                    {props.bigData !== undefined && props.bigData.map((item) => {
+                        return (
+                            <ExcelSheet data={Object.values(item)[0]} name={Object.keys(item)} key={Object.keys(item)}>
+                                <ExcelColumn label="一維條碼" value="一維條碼" />
+                                <ExcelColumn label="條碼(QR CODE)" value="條碼(QR CODE)" />
+                            </ExcelSheet>
+                        )
+                    })}
+                </ExcelFile> :
+                <ExcelFile filename="C模式" element={<Button variant="warning" size="lg" disabled={!props.show} onClick={() => props.afterExport()} style={!props.show ? { cursor: 'not-allowed' } : null}>輸出Excel</Button>}>
+                    {props.bigData !== undefined && props.bigData.map((item) => {
+                        return (
+                            <ExcelSheet data={Object.values(item)[0]} name={Object.keys(item)} key={Object.keys(item)}>
+                                <ExcelColumn label="外箱條碼" value="外箱條碼" />
+                            </ExcelSheet>
+                        )
+                    })}
+                </ExcelFile>
+            }
 
-                        </ExcelSheet>
-                    )
-                })}
-            </ExcelFile>
         </>
     );
 }

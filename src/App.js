@@ -1,7 +1,5 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-import Print from './components/print';
 import Home from './components/home';
 import 'bootstrap/dist/css/bootstrap.min.css';
 

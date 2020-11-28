@@ -7,9 +7,8 @@ import Row from 'react-bootstrap/Row';
 import { Button } from 'react-bootstrap';
 import Print from './print';
 import SweetAlert from 'sweetalert2-react';
-import ErrorSound from '../public/error.mp3';
 
-function A_mode() {
+function A_mode(props) {
     const [curData, setCurData] = React.useState('Box');
     const [bigData, setBigData] = React.useState([]);  // 最後得大資料
     const [smData, setSmData] = React.useState();    // 每一箱號的資料(暫存)
@@ -31,7 +30,15 @@ function A_mode() {
     }
 
     React.useEffect(() => {
-    }, [])
+        if ( props.curTab === 'a_mode' ) {
+            if ( curData === 'Box' ) 
+                inputBox.current.focus();
+            else if ( curData === 'A' ) 
+                inputA.current.focus();
+            else if ( curData === 'B' ) 
+                inputB.current.focus();
+        }
+    }, [props.curTab]);
 
     function playAudio() {
         let x = document.getElementById("myAudio");
@@ -41,9 +48,9 @@ function A_mode() {
     // 儲存編號到箱號陣列
     function saveData() {
         if (smData !== undefined) {
-            setSmData(pre => [...pre, { 'A': dataA, 'B': dataB }]);
+            setSmData(pre => [...pre, { '一維條碼': dataA, '條碼(QR CODE)': dataB }]);
         } else {
-            setSmData([{ 'A': dataA, 'B': dataB }]);
+            setSmData([{ '一維條碼': dataA, '條碼(QR CODE)': dataB }]);
         }
 
     }
@@ -56,7 +63,7 @@ function A_mode() {
                 inputB.current.focus();
             } else {
                 playAudio();
-                setMsg(pre => 'A資料出問題！');
+                setMsg(pre => '一維條碼格式有問題！');
                 setWindowType(pre => 'error');
                 setShow(true); // 跳出alert
                 inputA.current.focus();
@@ -67,7 +74,7 @@ function A_mode() {
                 inputA.current.focus();
             } else {
                 playAudio();
-                setMsg(pre => 'B資料出問題！');
+                setMsg(pre => 'QR CODE格式有問題！');
                 setWindowType(pre => 'error');
                 setShow(true); // 跳出alert
                 inputB.current.focus();
@@ -77,7 +84,7 @@ function A_mode() {
                 inputA.current.focus();
             } else {
                 playAudio();
-                setMsg(pre => '箱號資料出問題！');
+                setMsg(pre => '外箱條碼格式有問題！');
                 setWindowType(pre => 'error');
                 setShow(true); // 跳出alert
                 inputBox.current.focus();
@@ -98,7 +105,7 @@ function A_mode() {
             setWindowType(pre => 'error');
             setShow(true); // 跳出alert
         } else if (smData === undefined || smData === '') {
-            setMsg(pre => '請新增資料！');
+            setMsg(pre => '請先新增資料！');
             setWindowType(pre => 'error');
             setShow(true); // 跳出alert
         }
@@ -129,19 +136,15 @@ function A_mode() {
 
     return (
         <Fragment>
-            <audio id="myAudio">
-                <source src={ErrorSound} type="audio/mpeg" />
-                Your browser does not support the audio element.
-            </audio>
             <Container>
                 <Row>
                     <Col sm={4} >
                         <InputGroup className="mb-3" size="lg">
                             <InputGroup.Prepend>
-                                <InputGroup.Text>箱號</InputGroup.Text>
+                                <InputGroup.Text>外箱</InputGroup.Text>
                             </InputGroup.Prepend>
                             <FormControl value={boxNumber} onChange={(e) => setBoxNumber(e.target.value)} ref={inputBox}
-                                onFocus={(e) => handleFocus(e, 'Box')} aria-describedby="basic-addon1" onKeyPress={handlerInput} placeholder="請輸入箱號" maxlength="20" />
+                                onFocus={(e) => handleFocus(e, 'Box')} aria-describedby="basic-addon1" onKeyPress={handlerInput} placeholder="請掃描外箱條碼" maxLength="20" />
                         </InputGroup>
 
                     </Col>
@@ -152,8 +155,8 @@ function A_mode() {
                             <InputGroup.Prepend>
                                 <InputGroup.Text>輸入資料</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <FormControl value={dataA} onChange={(e) => setDataA(e.target.value)} ref={inputA} onFocus={(e) => handleFocus(e, 'A')} placeholder="請掃描A資料" onKeyPress={handlerInput} maxlength="20" />
-                            <FormControl value={dataB} onChange={(e) => setDataB(e.target.value)} ref={inputB} onFocus={(e) => handleFocus(e, 'B')} placeholder="請掃描B資料" onKeyPress={handlerInput} maxlength="20" />
+                            <FormControl value={dataA} onChange={(e) => setDataA(e.target.value)} ref={inputA} onFocus={(e) => handleFocus(e, 'A')} placeholder="請掃描一維條碼" onKeyPress={handlerInput} maxLength="20" />
+                            <FormControl value={dataB} onChange={(e) => setDataB(e.target.value)} ref={inputB} onFocus={(e) => handleFocus(e, 'B')} placeholder="請掃描QR Code" onKeyPress={handlerInput} maxLength="20" />
                         </InputGroup>
                     </Col>
                 </Row>

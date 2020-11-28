@@ -7,10 +7,9 @@ import Row from 'react-bootstrap/Row';
 import { Button } from 'react-bootstrap';
 import Print from './print';
 import SweetAlert from 'sweetalert2-react';
-import ErrorSound from '../public/error.mp3';
 
-function B_mode() {
-    const [curData, setCurData] = React.useState('Box');
+function B_mode(props) {
+    const [curData, setCurData] = React.useState('A');
     const [bigData, setBigData] = React.useState([]);  // 最後得大資料
     const [smData, setSmData] = React.useState();    // 每一箱號的資料(暫存)
     const [msg, setMsg] = React.useState(); // 視窗訊息
@@ -30,7 +29,13 @@ function B_mode() {
     }
 
     React.useEffect(() => {
-    }, [])
+        if ( props.curTab === 'b_mode' ) {
+            if ( curData === 'A' ) 
+                inputA.current.focus();
+            else if ( curData === 'B' ) 
+                inputB.current.focus();
+        }
+    }, [props.curTab]);
 
     function playAudio() {
         let x = document.getElementById("myAudio");
@@ -40,11 +45,10 @@ function B_mode() {
     // 儲存編號到箱號陣列
     function saveData() {
         if (smData !== undefined) {
-            setSmData(pre => [...pre, { 'A': dataA, 'B': dataB }]);
+            setSmData(pre => [...pre, { '一維條碼': dataA, '條碼(QR CODE)': dataB }]);
         } else {
-            setSmData([{ 'A': dataA, 'B': dataB }]);
+            setSmData([{ '一維條碼': dataA, '條碼(QR CODE)': dataB }]);
         }
-
     }
 
     // 驗證掃描資料
@@ -55,7 +59,7 @@ function B_mode() {
                 inputB.current.focus();
             } else {
                 playAudio();
-                setMsg(pre => 'A資料出問題！');
+                setMsg(pre => '一維條碼格式出問題！');
                 setWindowType(pre => 'error');
                 setShow(true); // 跳出alert
                 inputA.current.focus();
@@ -66,7 +70,7 @@ function B_mode() {
                 inputA.current.focus();
             } else {
                 playAudio();
-                setMsg(pre => 'B資料出問題！');
+                setMsg(pre => 'QR CODE格式出問題！');
                 setWindowType(pre => 'error');
                 setShow(true); // 跳出alert
                 inputB.current.focus();
@@ -83,7 +87,7 @@ function B_mode() {
     // 儲存到最終資料
     function saveBigData() {
         if (smData === undefined || smData === '') {
-            setMsg(pre => '請新增資料！');
+            setMsg(pre => '請先新增資料！');
             setWindowType(pre => 'error');
             setShow(true); // 跳出alert
         }
@@ -109,15 +113,12 @@ function B_mode() {
     // 輸出完檔案
     function afterExport() {
         setBigData(pre => []);
+        setNum(1);
         cleanAllInput();
     }
 
     return (
         <Fragment>
-            <audio id="myAudio">
-                <source src={ErrorSound} type="audio/mpeg" />
-                Your browser does not support the audio element.
-            </audio>
             <Container>
                 <Row>
                     <Col sm={8}>
@@ -125,15 +126,15 @@ function B_mode() {
                             <InputGroup.Prepend>
                                 <InputGroup.Text>輸入資料</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <FormControl value={dataA} onChange={(e) => setDataA(e.target.value)} ref={inputA} onFocus={(e) => handleFocus(e, 'A')} placeholder="請掃描A資料" onKeyPress={handlerInput} maxlength="20" />
-                            <FormControl value={dataB} onChange={(e) => setDataB(e.target.value)} ref={inputB} onFocus={(e) => handleFocus(e, 'B')} placeholder="請掃描B資料" onKeyPress={handlerInput} maxlength="20" />
+                            <FormControl value={dataA} onChange={(e) => setDataA(e.target.value)} ref={inputA} onFocus={(e) => handleFocus(e, 'A')} placeholder="請掃描一維條碼" onKeyPress={handlerInput} maxLength="20" />
+                            <FormControl value={dataB} onChange={(e) => setDataB(e.target.value)} ref={inputB} onFocus={(e) => handleFocus(e, 'B')} placeholder="請掃描QR CODE" onKeyPress={handlerInput} maxLength="20" />
                         </InputGroup>
                     </Col>
                 </Row>
                 <Row>
                     <Col sm={8} style={{ marginBottom: '16px' }}>
                         當前箱號有{smData !== undefined ? smData.length : 0}筆資料，{bigData !== undefined ? bigData.length : 0}筆箱號
-                </Col>
+                    </Col>
                 </Row>
                 <Row>
                     <Col sm={8}>
