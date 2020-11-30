@@ -15,9 +15,8 @@ function B_mode(props) {
     const [msg, setMsg] = React.useState(); // 視窗訊息
     const [windowType, setWindowType] = React.useState('info');  // 視窗類型
     const [show, setShow] = React.useState(false);
-    const [dataA, setDataA] = React.useState();
-    const [dataB, setDataB] = React.useState();
-    const [num, setNum] = React.useState(1);  // 幾頁分頁
+    const [dataA, setDataA] = React.useState("");
+    const [dataB, setDataB] = React.useState("");
     const inputA = React.useRef();
     const inputB = React.useRef();
 
@@ -29,10 +28,10 @@ function B_mode(props) {
     }
 
     React.useEffect(() => {
-        if ( props.curTab === 'b_mode' ) {
-            if ( curData === 'A' ) 
+        if (props.curTab === 'b_mode') {
+            if (curData === 'A')
                 inputA.current.focus();
-            else if ( curData === 'B' ) 
+            else if (curData === 'B')
                 inputB.current.focus();
         }
     }, [props.curTab]);
@@ -45,9 +44,9 @@ function B_mode(props) {
     // 儲存編號到箱號陣列
     function saveData() {
         if (smData !== undefined) {
-            setSmData(pre => [...pre, { '一維條碼': dataA, '條碼(QR CODE)': dataB }]);
+            setSmData(pre => [...pre, [{ value: dataA }, { value: dataB }]]);
         } else {
-            setSmData([{ '一維條碼': dataA, '條碼(QR CODE)': dataB }]);
+            setSmData([[{ value: dataA }, { value: dataB }]]);
         }
     }
 
@@ -92,8 +91,14 @@ function B_mode(props) {
             setShow(true); // 跳出alert
         }
         else {
-            setBigData([...bigData, { [num]: smData }]);
-            setNum(num => num + 1);
+            setBigData([...bigData, { 
+                columns: [
+                    { title: "一維條碼", width: {wpx: 120} }, // width in pixels
+                    { title: "條碼(QR CODE)", width: {wpx: 120} }, // width in pixels
+                  ],
+                  data: smData
+                  ,
+            }]);
             cleanAllInput();
             setMsg(pre => '新增箱號成功！');
             setWindowType(pre => 'success');
@@ -113,7 +118,6 @@ function B_mode(props) {
     // 輸出完檔案
     function afterExport() {
         setBigData(pre => []);
-        setNum(1);
         cleanAllInput();
     }
 
@@ -133,12 +137,12 @@ function B_mode(props) {
                 </Row>
                 <Row>
                     <Col sm={8} style={{ marginBottom: '16px' }}>
-                        當前箱號有{smData !== undefined ? smData.length : 0}筆資料，{bigData !== undefined ? bigData.length : 0}筆箱號
+                        當前分頁有{smData !== undefined ? smData.length : 0}筆資料，{bigData !== undefined ? bigData.length : 0}筆分頁
                     </Col>
                 </Row>
                 <Row>
                     <Col sm={8}>
-                        <Button variant="info" size="lg" onClick={() => saveBigData()}>儲存當前箱號</Button>
+                        <Button variant="info" size="lg" onClick={() => saveBigData()}>儲存當前分頁</Button>
                         {' '}
                         <Print
                             from="B"

@@ -14,8 +14,7 @@ function C_mode(props) {
     const [msg, setMsg] = React.useState(); // 視窗訊息
     const [windowType, setWindowType] = React.useState('info');  // 視窗類型
     const [show, setShow] = React.useState(false);
-    const [num, setNum] = React.useState(1);  // 幾頁分頁
-    const [boxNumber, setBoxNumber] = React.useState();
+    const [boxNumber, setBoxNumber] = React.useState("");
     const inputBox = React.useRef();
     const fontRef = React.useRef();
 
@@ -29,7 +28,7 @@ function C_mode(props) {
     }
 
     React.useEffect(() => {
-        if ( props.curTab === 'c_mode' ) {
+        if (props.curTab === 'c_mode') {
             inputBox.current.focus();
         }
     }, [props.curTab]);
@@ -42,11 +41,10 @@ function C_mode(props) {
     // 儲存編號到箱號陣列
     function saveData() {
         if (smData !== undefined) {
-            setSmData(pre => [...pre, { '外箱條碼': boxNumber }]);
+            setSmData(pre => [...pre, {value: boxNumber}]);
         } else {
-            setSmData([{ '外箱條碼': boxNumber }]);
+            setSmData([{value: boxNumber}]);
         }
-
     }
 
     // 驗證掃描資料
@@ -80,8 +78,16 @@ function C_mode(props) {
             setShow(true); // 跳出alert
         }
         else {
-            setBigData([...bigData, { [num]: smData }]);
-            setNum(num => num + 1);
+            setBigData([...bigData, { 
+                columns: [
+                    { title: "箱號", width: {wpx: 120} }, // width in pixels
+                  ],
+                  data: 
+                    smData.map((arr) =>{
+                        return [arr];
+                    })
+                  ,
+            }]);
             cleanAllInput();
             setMsg(pre => '新增箱號成功！');
             setWindowType(pre => 'success');
@@ -100,7 +106,6 @@ function C_mode(props) {
     // 輸出完檔案
     function afterExport() {
         setBigData(pre => []);
-        setNum(1);
         cleanAllInput();
     }
 

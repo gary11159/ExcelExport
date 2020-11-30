@@ -15,9 +15,9 @@ function A_mode(props) {
     const [msg, setMsg] = React.useState(); // 視窗訊息
     const [windowType, setWindowType] = React.useState('info');  // 視窗類型
     const [show, setShow] = React.useState(false);
-    const [boxNumber, setBoxNumber] = React.useState();
-    const [dataA, setDataA] = React.useState();
-    const [dataB, setDataB] = React.useState();
+    const [boxNumber, setBoxNumber] = React.useState("");
+    const [dataA, setDataA] = React.useState("");
+    const [dataB, setDataB] = React.useState("");
     const inputBox = React.useRef();
     const inputA = React.useRef();
     const inputB = React.useRef();
@@ -48,9 +48,9 @@ function A_mode(props) {
     // 儲存編號到箱號陣列
     function saveData() {
         if (smData !== undefined) {
-            setSmData(pre => [...pre, { '一維條碼': dataA, '條碼(QR CODE)': dataB }]);
+            setSmData(pre => [...pre, [{ value: boxNumber }, { value: dataA }, { value: dataB }]]);
         } else {
-            setSmData([{ '一維條碼': dataA, '條碼(QR CODE)': dataB }]);
+            setSmData([[{ value: boxNumber }, { value: dataA }, { value: dataB }]]);
         }
 
     }
@@ -110,7 +110,16 @@ function A_mode(props) {
             setShow(true); // 跳出alert
         }
         else {
-            setBigData([...bigData, { [boxNumber]: smData }]);
+            setBigData([...bigData, { 
+                columns: [
+                    { title: "箱號", width: {wpx: 100}},
+                    { title: "一維條碼", width: {wpx: 120} }, // width in pixels
+                    { title: "條碼(QR CODE)", width: {wpx: 120} }, // width in pixels
+                  ],
+                  data: smData
+                  ,
+            }]);
+
             cleanAllInput();
             setMsg(pre => '新增箱號成功！');
             setWindowType(pre => 'success');
