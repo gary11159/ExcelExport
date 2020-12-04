@@ -48,6 +48,8 @@ function B_mode(props) {
         } else {
             setSmData([[{ value: dataA }, { value: dataB }]]);
         }
+        setDataA('');
+        setDataB('');
     }
 
     // 驗證掃描資料

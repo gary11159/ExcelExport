@@ -53,6 +53,8 @@ function A_mode(props) {
             setSmData([[{ value: boxNumber }, { value: dataA }, { value: dataB }]]);
         }
 
+        setDataA('');
+        setDataB('');
     }
 
     // 驗證掃描資料

@@ -45,6 +45,8 @@ function C_mode(props) {
         } else {
             setSmData([{value: boxNumber}]);
         }
+
+        setBoxNumber('');
     }
 
     // 驗證掃描資料
@@ -68,11 +70,7 @@ function C_mode(props) {
 
     // 儲存到最終資料
     function saveBigData() {
-        if (boxNumber === undefined || boxNumber === '' || boxNumber === null) {
-            setMsg(pre => '請輸入箱號！');
-            setWindowType(pre => 'error');
-            setShow(true); // 跳出alert
-        } else if (smData === undefined || smData === '') {
+        if (smData === undefined || smData === '') {
             setMsg(pre => '請先新增資料！');
             setWindowType(pre => 'error');
             setShow(true); // 跳出alert
