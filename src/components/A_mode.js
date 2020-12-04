@@ -68,6 +68,7 @@ function A_mode(props) {
                 setMsg(pre => '一維條碼格式有問題！');
                 setWindowType(pre => 'error');
                 setShow(true); // 跳出alert
+                setDataA('');
                 inputA.current.focus();
             }
         } else if (curData === 'B') {
@@ -79,6 +80,7 @@ function A_mode(props) {
                 setMsg(pre => 'QR CODE格式有問題！');
                 setWindowType(pre => 'error');
                 setShow(true); // 跳出alert
+                setDataB('');
                 inputB.current.focus();
             }
         } else if (curData === 'Box') {
@@ -89,6 +91,7 @@ function A_mode(props) {
                 setMsg(pre => '外箱條碼格式有問題！');
                 setWindowType(pre => 'error');
                 setShow(true); // 跳出alert
+                setBoxNumber('');
                 inputBox.current.focus();
             }
         }

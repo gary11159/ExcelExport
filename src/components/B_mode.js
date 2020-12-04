@@ -63,6 +63,7 @@ function B_mode(props) {
                 setMsg(pre => '一維條碼格式出問題！');
                 setWindowType(pre => 'error');
                 setShow(true); // 跳出alert
+                setDataA('');
                 inputA.current.focus();
             }
         } else if (curData === 'B') {
@@ -74,6 +75,7 @@ function B_mode(props) {
                 setMsg(pre => 'QR CODE格式出問題！');
                 setWindowType(pre => 'error');
                 setShow(true); // 跳出alert
+                setDataB('');
                 inputB.current.focus();
             }
         }

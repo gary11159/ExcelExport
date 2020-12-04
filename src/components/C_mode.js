@@ -57,6 +57,7 @@ function C_mode(props) {
             setMsg(pre => '外箱條碼格式出問題！');
             setWindowType(pre => 'error');
             setShow(true); // 跳出alert
+            setBoxNumber('');
             inputBox.current.focus();
         } else {
             saveData();
