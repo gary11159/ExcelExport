@@ -1,6 +1,6 @@
 {
   "name": "ExcelExport",
-  "homepage": "https://gary11159.github.io/ExcelExport/",
+  "homepage": "./",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
